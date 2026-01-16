@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>好友吐槽机（可转发）</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: linear-gradient(120deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 30px 25px;
+            box-shadow: 0 10px 30px rgba(255, 154, 158, 0.3);
+            position: relative;
+        }
+        .title {
+            text-align: center;
+            color: #e63946;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #6a994e;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .tips {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            margin: 15px 0;
+        }
+        /* 功能模块样式 */
+        .module {
+            margin: 25px 0;
+        }
+        .module-title {
+            color: #457b9d;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 3px solid #ff9a9e;
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        .input-group input {
+            width: 100%;
+            height: 50px;
+            padding: 0 15px;
+            border: 2px solid #f1faee;
+            border-radius: 10px;
+            font-size: 16px;
+            color: #1d3557;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .input-group input:focus {
+            border-color: #ff9a9e;
+            box-shadow: 0 0 10px rgba(255, 154, 158, 0.2);
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            height: 55px;
+            line-height: 55px;
+            text-align: center;
+            background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 15px 0;
+        }
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4);
+        }
+        .btn-secondary {
+            background: linear-gradient(90deg, #a8dadc, #457b9d);
+        }
+        .btn-third {
+            background: linear-gradient(90deg, #f1faee, #6a994e);
+            color: #1d3557;
+        }
+        /* 结果展示样式 */
+        .result-box {
+            margin: 30px 0;
+            padding: 25px 20px;
+            background-color: #f1faee;
+            border-radius: 15px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: inset 0 0 10px rgba(106, 153, 78, 0.1);
+        }
+        .result-text {
+            color: #1d3557;
+            font-size: 18px;
+            line-height: 1.8;
+            animation: fadeIn 0.8s ease;
+        }
+        /* 问答弹窗样式 */
+        .question-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 30px 25px;
+            max-width: 380px;
+            text-align: center;
+        }
+        .modal-question {
+            color: #e63946;
+            font-size: 20px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .modal-btn-group {
+            display: flex;
+            gap: 15px;
+        }
+        .modal-btn {
+            flex: 1;
+            height: 50px;
+            line-height: 50px;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-yes {
+            background-color: #ff9a9e;
+            color: #fff;
+        }
+        .btn-no {
+            background-color: #a8dadc;
+            color: #1d3557;
+        }
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* 隐藏元素 */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🤣 不搞笑纯恶意 🤣</h1>
+        <p class="subtitle">不搞笑纯恶意 | 朋友间互怼专用</p>
+        <p class="tips">温馨提示：屁眼男神～</p>
+
+        <!-- 模块1：一键随机吐槽 -->
+        <div class="module">
+            <h2 class="module-title">1. 一键随机损人</h2>
+            <button class="btn" onclick="randomRoast()">点击生成随机吐槽</button>
+        </div>
+
+        <!-- 模块2：针对性姓名吐槽 -->
+        <div class="module">
+            <h2 class="module-title">2. 输入姓名精准吐槽</h2>
+            <div class="input-group">
+                <input type="text" id="friendName" placeholder="常哲滈">
+            </div>
+            <button class="btn btn-secondary" onclick="nameRoast()">生成专属吐槽</button>
+        </div>
+
+        <!-- 模块3：整蛊问答吐槽 -->
+        <div class="module">
+            <h2 class="module-title">3. 整蛊问答陷阱</h2>
+            <button class="btn btn-third" onclick="openQuestionModal()">开启问答整蛊</button>
+        </div>
+
+        <!-- 吐槽结果展示 -->
+        <div class="result-box">
+            <p class="result-text" id="resultText">点击上方按钮，生成你的吐槽内容～</p>
+        </div>
+
+        <p class="tips">吐槽结果可截图转发给好友哦～</p>
+    </div>
+
+    <!-- 问答弹窗 -->
+    <div class="question-modal" id="questionModal">
+        <div class="modal-content">
+            <p class="modal-question" id="modalQuestion">你觉得自己比好友聪明吗？</p>
+            <div class="modal-btn-group">
+                <button class="modal-btn btn-yes" onclick="answerQuestion('yes')">是</button>
+                <button class="modal-btn btn-no" onclick="answerQuestion('no')">否</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局数据：吐槽语料库（无恶意，纯搞笑夸张）
+        // 1. 随机通用吐槽库
+        const randomRoastList = [
+            "你长得真有创意，活得真有勇气～",
+            "上帝把智慧洒满人间，唯独给你撑了把伞～",
+            "你这智商，怕是连二维码都扫不出来～",
+            "别低头，皇冠会掉；别抬头，脸会吓到人～",
+            "如果丑能当饭吃，你能养活整个地球村～",
+            "你是不是被月老遗忘在黑名单里了～",
+            "我怀疑你是快乐星球来的，因为你长得有点像外星人～",
+            "你这脑子，拿去腌咸菜都嫌咸～",
+            "不是我说你，你这条件，也就只能靠搞笑活着了，还挺成功～",
+            "别人是脑子不够用，你是直接没带脑子出门～",
+            "建议你去测个智商，说不定能刷新人类最低记录～",
+            "你长得挺着急的，是不是出生的时候被快递员催了～",
+            "抠门鬼实锤了，以后没人愿意和你做朋友咯～",
+            "别气死啊",
+            "跟你聊天我都觉得自己智商在被拉低，快停止你的操作～"
+        ];
+
+        // 2. 针对性姓名吐槽库（{name} 为姓名占位符）
+        const nameRoastList = [
+            "{眼}，你是不是上辈子拯救了银河系，这辈子才能长得这么“出众”～",
+            "说真的{眼}，你的智商和你的颜值一样，都让人一言难尽～",
+            "{眼}啊{眼}，抠门都快成你的专属标签了，要不要我给你申请个专利～",
+            "我严重怀疑{眼}的脑子是租来的，用完还得还，所以舍不得用～",
+            "{眼}，你这长相，不去拍恐怖片真是屈才了，导演都不用化妆～",
+            "别人熬夜熬的是颜值，{眼}熬夜熬的是越来越离谱的智商～",
+            "{眼}，建议你以后出门带个镜子，免得不知道自己有多“可爱”～",
+            "跟{眼}做朋友，我每天都在怀疑人生，怀疑自己为什么要认识你～",
+            "{眼}，你这操作，真是小刀剌屁股——开了眼了～",
+            "如果搞笑有等级，{眼}绝对是王者，毕竟长得就很搞笑～"
+        ];
+
+        // 3. 整蛊问答库（无论回答是/否，都有对应吐槽）
+        const questionList = [
+            {
+                question: "你觉得自己比好友聪明吗？",
+                yes: "哟，这么自信？怕不是昨晚没照镜子就睡了吧～",
+                no: "还算有自知之明，继续保持，别哪天突然飘了～"
+            },
+            {
+                question: "你觉得自己颜值在线吗？",
+                yes: "巧了，我刚才还在想，什么人会觉得自己颜值在线又点开这个游戏～",
+                no: "明白人！比那些自我感觉良好的人强多了，至少审美没欠费～"
+            },
+            {
+                question: "你愿意请好友喝奶茶吗？",
+                yes: "不错不错，有眼光，可惜好友不一定喝你的奶茶（手动狗头）～",
+                no: "抠门鬼实锤了，以后没人愿意和你做朋友咯～"
+            },
+            {
+                question: "你觉得自己的脑子够用吗？",
+                yes: "自信是好事，但盲目自信就是你的不对了～",
+                no: "终于认清现实了，不容易啊，值得鼓励～"
+            },
+            {
+                question: "你觉得好友会被你气死吗？",
+                yes: "你可太看得起自己了，好友根本没把你放在心上～",
+                no: "那是自然，毕竟没人会和一个“小可爱”计较～"
+            }
+        ];
+
+        // 功能1：一键随机吐槽
+        function randomRoast() {
+            const resultText = document.getElementById("resultText");
+            // 随机选择一条吐槽
+            const randomIndex = Math.floor(Math.random() * randomRoastList.length);
+            const roastContent = randomRoastList[randomIndex];
+            // 展示结果（带动画）
+            resultText.innerText = roastContent;
+        }
+
+        // 功能2：针对性姓名吐槽
+        function nameRoast() {
+            const resultText = document.getElementById("resultText");
+            const friendName = document.getElementById("friendName").value.trim();
+            // 判断是否输入姓名
+            if (!friendName) {
+                resultText.innerText = "请先输入好友姓名哦～不然我不知道该吐槽谁～";
+                return;
+            }
+            // 随机选择一条姓名吐槽，替换占位符
+            const randomIndex = Math.floor(Math.random() * nameRoastList.length);
+            let roastContent = nameRoastList[randomIndex];
+            roastContent = roastContent.replace(/{name}/g, friendName);
+            // 展示结果
+            resultText.innerText = roastContent;
+        }
+
+        // 功能3：打开整蛊问答弹窗
+        function openQuestionModal() {
+            const questionModal = document.getElementById("questionModal");
+            const modalQuestion = document.getElementById("modalQuestion");
+            // 随机选择一个问题
+            const randomIndex = Math.floor(Math.random() * questionList.length);
+            const randomQuestion = questionList[randomIndex];
+            // 存储当前问题（用于回答判断）
+            sessionStorage.setItem("currentQuestion", JSON.stringify(randomQuestion));
+            // 展示弹窗和问题
+            modalQuestion.innerText = randomQuestion.question;
+            questionModal.style.display = "flex";
+        }
+
+        // 功能3：回答整蛊问题（触发对应吐槽）
+        function answerQuestion(answerType) {
+            const questionModal = document.getElementById("questionModal");
+            const resultText = document.getElementById("resultText");
+            // 获取当前存储的问题
+            const currentQuestion = JSON.parse(sessionStorage.getItem("currentQuestion"));
+            // 判断回答类型，获取对应吐槽
+            let roastContent = answerType === "yes" ? currentQuestion.yes : currentQuestion.no;
+            // 隐藏弹窗，展示结果
+            questionModal.style.display = "none";
+            resultText.innerText = roastContent;
+        }
+    </script>
+</body>
+</html>
